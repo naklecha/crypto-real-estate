@@ -1,0 +1,87 @@
+<!doctype html>
+<html class="no-js" lang="zxx">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>Crypto Real Estate</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="shortcut icon" type="image/x-icon" href="img/favicon.png">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="style1.css">
+    <link href="https://fonts.googleapis.com/css?family=Cinzel+Decorative|Open+Sans:300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+
+
+    
+</head>
+
+<body>
+    <header>
+        <div class="header-area ">
+            <div id="sticky-header" class="main-header-area white-bg">
+                <div class="container-fluid p-0">
+                    <div class="row align-items-center justify-content-between no-gutters">
+                        <div class="col-xl-2 col-lg-2">
+                            <div class="logo-img">
+                                <a style="font-family: 'Cinzel Decorative', cursive;" href="{{ url_for('home')}}">
+                                    <span style="font-size: 2em;">CRE</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-xl-9 col-lg-1000">
+                            <div class="main-menu  d-none d-lg-block">
+                                <nav>
+                                    <ul id="navigation" align="right">
+                                        <li><a class="active" href="{{ url_for('home')}}">Home</a></li>
+                                        {% if not session.signedin %}
+                                            <li><a href="{{ url_for('login')}}">Login</a></li>
+                                        {% endif %}
+                                        {% if session.signedin %}
+                                            <li><a href="{{ url_for('logout')}}">Logout</a></li>
+                                            <li><p style="font-family:Arial, Helvetica, sans-serif; color:mediumseagreen">Public Key: {{session.public}}</p></li>
+                                        {% endif %}
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="mobile_menu d-block d-lg-none"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div style="height:400px;background:rgb(97, 57, 109);" class="breadcam_area">
+        <div style=" font-family: 'Open Sans', sans-serif;font-weight: 100;" class="bradcam_text">
+            <h3>Cryto Real Estate</h3>
+        </div>
+    </div>
+    <div id="outer">
+            <div class="box" id="one" style="margin-top: 4%;">
+                <div class="image">
+                    <img height = "300px" src = "../../logo.PNG">
+                </div>
+                <div class="text">
+                    <h2>#1 Crypto Collectable</h2>
+                    <p>Collect as many plots before they sell out!</p>
+                </div>
+            </div>
+    
+            <div class="box" id="two">
+                <div class="image">
+                        <img id="i" src = "../../safe.PNG">
+                </div>
+                <div class="text">
+                    <h2>Secure Market on Blockchain</h2>
+                    <p>All transactions take place on a blockchain making sure your collectable is safe!</p>
+                </div>
+            </div>
+        </div>
+    
+</body>

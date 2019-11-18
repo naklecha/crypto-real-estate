@@ -13,6 +13,7 @@ contract CRE {
     mapping(uint => Land) public land_record;
     uint public landCount = 0;
     uint public check = 0;
+    uint private dummy = 1;
 
     function initLand(uint region, uint x, uint y) public {
         require(check==0, "Already Created Land Grid");
@@ -26,7 +27,10 @@ contract CRE {
         check = 1;
     }
 
-    
+    function login() public {
+        dummy = 1;
+    }
+
     function buyLand (uint landid, uint price) public {
         require(land_record[landid].status == 0,"Not for sale.");
 
