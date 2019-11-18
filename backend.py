@@ -53,17 +53,33 @@ api.add_resource(xy, '/xy')
 
 class buy(Resource):
     def post(self):
-            req = eval(request.data) # expecting {'region': 1, 'x': 1, 'y': 1, 'nickname': '_empty', 'price': 100}
-            print(req)
-            getxy = requests.get(PATH+"xy",json = {"region": req["region"],"x": req["x"],"y": req["y"]})
-            getxy = eval(getxy._content)
-            print(getxy)
-            if(getxy['price']<=req['price']):
-                postxy = requests.post(PATH+"xy",json = {"region": req["region"],"x": req["x"],"y": req["y"], 'nickname': req['nickname'], 'price': req['price'], 'status': 'not for sale'})          
-                return eval(postxy._content)
-            else:
-                return "Not enough funds", 400
+        req = eval(request.data) # expecting {'region': 1, 'x': 1, 'y': 1, 'nickname': '_empty', 'price': 100}
+        print(req)
+        getxy = requests.get(PATH+"xy",json = {"region": req["region"],"x": req["x"],"y": req["y"]})
+        getxy = eval(getxy._content)
+        print(getxy)
+        if(getxy['price']<=req['price']):
+            postxy = requests.post(PATH+"xy",json = {"region": req["region"],"x": req["x"],"y": req["y"], 'nickname': req['nickname'], 'price': req['price'], 'status': 'not for sale'})          
+            return eval(postxy._content)
+        else:
+            return "Not enough funds", 400
 api.add_resource(buy, '/buy')
+
+# ------------------------------------------------------
+
+class sell(Resource):
+    def post(self):
+        req = eval(request.data) # expecting {'region': 1, 'x': 1, 'y': 1, 'nickname': '_empty', 'price': 100}
+        print(req)
+        getxy = requests.get(PATH+"xy",json = {"region": req["region"],"x": req["x"],"y": req["y"]})
+        getxy = eval(getxy._content)
+        print(getxy)
+        if(True): # check if owner using blockchain
+            postxy = requests.post(PATH+"xy",json = {"region": req["region"],"x": req["x"],"y": req["y"], 'nickname': req['nickname'], 'price': req['price'], 'status': 'for sale'})          
+            return eval(postxy._content)
+        else:
+            return "Not owner", 400
+api.add_resource(sell, '/sell')
 
 # ------------------------------------------------------
 

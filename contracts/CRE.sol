@@ -1,4 +1,4 @@
-pragma solidity 0.4.24;
+pragma solidity ^0.5.0;
 
 contract CRE {
     struct Land{
@@ -11,26 +11,22 @@ contract CRE {
     }
     mapping(address => uint) public wallet;
     mapping(uint => Land) public land_record;
-    uint public landCount = 0; 
-    constructor() public {
-        uint c = 0;
-        for(uint i=0;i<4;i++)
-        {
-            for(uint j=0;j<64;j++)
-            {
-                for(uint k=0;k<64;k++)
-                {
-                    addLandRecord(i,j,k);
-                }
-            }
-        }
-    }
+    uint public landCount = 0;
+    uint public check = 0;
 
+    function initLand(uint region, uint x, uint y) public {
+        require(check==0, "Already Created Land Grid");
+        addLandRecord(region,x,y);
+    }
     function addLandRecord (uint i,uint j,uint k) private {
         landCount ++;
-        candidates[landCount] = Land(i, j, k, msg.sender, 0, 0);
+        land_record[landCount] = Land(i, j, k, msg.sender, 0, 0);
+    }
+    function doneInit () public {
+        check = 1;
     }
 
+    
     function buyLand (uint landid, uint price) public {
         require(land_record[landid].status == 0,"Not for sale.");
 

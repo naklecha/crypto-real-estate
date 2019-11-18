@@ -1,5 +1,5 @@
-var HelloBlockchain = artifacts.require("HelloBlockchain");
-var Arg = "Hello world";
-module.exports = deployer => {
-    deployer.deploy(HelloBlockchain, Arg);
+const CRE = artifacts.require("CRE");
+
+module.exports = function(deployer) {
+  deployer.deploy(CRE);
 };
