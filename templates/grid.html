@@ -131,7 +131,6 @@
                                 var d = document.getElementById(i);
                                 if(resp[i] == 1)
                                 {
-                                    console.log("HEREEEEEEEEEE");
                                     d.style.backgroundColor = "lightblue";
                                     d.onmouseover = function(){this.style.backgroundColor = "lightgreen"}
                                     d.onmouseleave = function(){this.style.backgroundColor = "lightblue"}
@@ -184,9 +183,19 @@
             }
         }
 
-        balan = new XMLHttpRequest();
-        balan.onreadystatechange = function(){ 
-            document.getElementById("balance").innerHTML"Balance:" 
+        function b()
+        {
+            balan = new XMLHttpRequest();
+            balan.onreadystatechange = function(){
+                if(balan.readyState == 4 && balan.status == 200)
+                { 
+                    document.getElementById("balance").innerHTML = "Balance: "+balan.responseText;
+                }
+            }
+            balan.open("GET", "http://localhost:5000/getBalance", true);
+            balan.send();
         }
+        b()
+        setInterval(n, 5000);
     </script>
 </html>

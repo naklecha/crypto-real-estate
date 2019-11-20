@@ -41,7 +41,6 @@ class home(Resource):
         return make_response(render_template('homepage.html'),200,{'Content-Type': 'text/html'})
 api.add_resource(home, '/')
 
-
 # ------------------------------------------------------
 
 class regions(Resource):
@@ -78,10 +77,11 @@ api.add_resource(checkowner,"/checkowner/<reg>")
 class getBalance(Resource):
     def get(self):
         if(session["signedin"]):
-            return contract.caller().wallet(hex(session["public"]))
+            return contract.caller().wallet(session["public"])
         else:
             return "error", 400
- 
+api.add_resource(getBalance,"/getBalance")
+
 # ------------------------------------------------------
 
 class xy(Resource):
@@ -107,18 +107,14 @@ api.add_resource(xy, '/xy/<id>')
 # ------------------------------------------------------
 
 class buy(Resource):
-    def post(self):
-        req = eval(request.data) # expecting {'region': 1, 'x': 1, 'y': 1, 'nickname': '_empty', 'price': 100}
-        print(req)
-        getxy = requests.get(PATH+"xy",json = {"region": req["region"],"x": req["x"],"y": req["y"]})
-        getxy = eval(getxy._content)
-        print(getxy)
-        if(getxy['price']<=req['price']):
-            postxy = requests.post(PATH+"xy",json = {"region": req["region"],"x": req["x"],"y": req["y"], 'nickname': req['nickname'], 'price': req['price'], 'status': 'not for sale'})          
-            return eval(postxy._content)
-        else:
-            return "Not enough funds", 400
-api.add_resource(buy, '/buy')
+    def post(self, id, price):
+        transaction  = contract.functions.buyLand(id,price).buildTransaction()
+        transaction['nonce'] = web3.eth.getTransactionCount(public_key)
+        transaction['gas'] = 3000000
+        signed_tx = web3.eth.account.signTransaction(transaction, private_key)
+        tx_hash = web3.eth.sendRawTransaction(signed_tx.rawTransaction)
+        return tx_hash
+api.add_resource(buy, '/buy/<id>/<price>')
 
 # ------------------------------------------------------
 
