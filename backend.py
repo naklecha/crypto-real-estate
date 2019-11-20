@@ -75,19 +75,21 @@ api.add_resource(checkowner,"/checkowner/<reg>")
 
 # ------------------------------------------------------
 
-class xy(Resource):
+class getBalance(Resource):
     def get(self):
-        req = eval(request.data)
-        print(req)
-        try: # region - 0,1,2,3 clockwise 
-            # expecting {'region': 1, 'x': 1, 'y': 1}
-            find = land_record.find_one({"region": req["region"],"x": req["x"],"y": req["y"]})
-            find.pop('_id')
-            print(find)
-            return find,200
-        except:
-            return {},400
-    def post(self):
+        if(session["signedin"]):
+            return contract.caller().wallet(hex(session["public"]))
+        else:
+            return "error", 400
+ 
+# ------------------------------------------------------
+
+class xy(Resource):
+    def get(self,id):
+        s = contract.caller().land_record(int(id)+1)
+        print(s)
+        return s,200
+    def post(self,id):
         req = eval(request.data)
         try: # expecting req to be like {'region': 1, 'x': 1, 'y': 1, 'nickname': '_empty', 'price': 0, 'status': 'no owner'}
             myquery = {"region": req["region"],"x": req["x"],"y": req["y"]}
@@ -100,7 +102,7 @@ class xy(Resource):
         except:
             return {},400
 
-api.add_resource(xy, '/xy')
+api.add_resource(xy, '/xy/<id>')
 
 # ------------------------------------------------------
 

@@ -4,21 +4,22 @@
             grid-template-columns: auto auto auto auto auto auto auto auto auto auto;
             display: grid;
             grid-gap: 2px;
-            background-color:goldenrod;
+            background-color:#4c4c4c;
             padding: 5px;
             width: 70%;
             float: left;
-            height: 72%;
+            height: 68%;
         }
 
         .grid-item {
-            background-color: whitesmoke;
+            background-color:cornsilk;
             text-align: center;
             padding: 10px;
-            font-size: 17px;
+            font-size: 15px;
             font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
             cursor: pointer;
             height: 100%;
+            border: solid #4c4c4c 1px;
         }
         .grid-item:hover
         {
@@ -30,7 +31,16 @@
             background: palegoldenrod;
             height: 100%;
             margin-left: 20px;
-            height: 72%;
+            height: 68%;
+            border:solid #4c4c4c 2px;
+            font-weight: 100;
+            font-family: 'Roboto', sans-serif;
+            padding: 2%;
+        }
+        h2,h1,h3,h4,p
+        {
+            font-family: 'Roboto', sans-serif;
+            font-weight: 100;
         }
     </style>
     <head>
@@ -52,10 +62,10 @@
             
     </head>
         
-    <body style="">
+    <body style="background-color: whitesmoke">
     <header>
-            <div class="header-area ">
-                <div id="sticky-header" class="main-header-area white-bg">
+            <div class="header-area "  style="background-color: lightseagreen">
+                <div id="sticky-header" class="main-header-area">
                     <div class="container-fluid p-0">
                         <div class="row align-items-center justify-content-between no-gutters">
                             <div class="col-xl-2 col-lg-2">
@@ -75,7 +85,7 @@
                                             {% endif %}
                                             {% if session.signedin %}
                                                 <li><a href="{{ url_for('logout')}}">Logout</a></li>
-                                                <li><p style="font-family:Arial, Helvetica, sans-serif; color:mediumseagreen">Public Key: {{session.public}}</p></li>
+                                                <li><p style="font-family:Arial, Helvetica, sans-serif; color:whitesmoke">Public Key: {{session.public}}</p></li>
                                             {% endif %}
                                         </ul>
                                     </nav>
@@ -90,13 +100,22 @@
             </div>
         </header>
         <div style="padding-left: 10%; padding-right: 10%; padding-top: 3%; padding-bottom: 0%;">
+            <h2>Welcome to the blockchain marketplace</h2>
             <div class="grid-container">
                 {% for i in range(100) %}
                     <div class="grid-item" id="{{i}}">{{i}}</div>
                 {% endfor %}
             </div>
             
-            <div class="info"> stuff </div>
+            <div class="info">
+                <p id="loading"></p>
+                <h1 id="block">Select A Block</h1> 
+                <hr> <br>
+                <h4 id="price">Current Price: </h4>
+                <h4 id="status">Status: </h4>
+                <h4 id="balance">Balance: </h4>
+                <hr>
+            </div>
         </div>
     </body>
     <script>
@@ -105,18 +124,19 @@
             xhr.onreadystatechange = function(){
                         if(xhr.readyState == 4 && xhr.status == 200)
                         {
-                            var res = JSON.parse(xhr.responseText);
-                            console.log(res);
+                            var resp = JSON.parse(xhr.responseText);
+                            console.log(resp);
                             for(var i=0; i<100; i++)
                             {
                                 var d = document.getElementById(i);
-                                if(res[i] == 1)
+                                if(resp[i] == 1)
                                 {
+                                    console.log("HEREEEEEEEEEE");
                                     d.style.backgroundColor = "lightblue";
                                     d.onmouseover = function(){this.style.backgroundColor = "lightgreen"}
                                     d.onmouseleave = function(){this.style.backgroundColor = "lightblue"}
                                 }
-                                if(res[i] == 2)
+                                if(resp[i] == 2)
                                 {
                                     d.style.backgroundColor = "pink";
                                     d.onmouseover = function(){this.style.backgroundColor = "lightgreen"}
@@ -125,10 +145,48 @@
                             }
                         }
                     };
-            xhr.open("GET", "http://localhost:5000/checkowner/{{region}}", false);
+            xhr.open("GET", "http://localhost:5000/checkowner/{{region}}", true);
             xhr.send();
         }
         n();
-        setInterval(n, 30000);
+        setInterval(n, 120000);
+
+        for(var i=0; i<100; i++)
+        {
+            var d = document.getElementById(i);
+            d.onclick = function()
+            {
+                loading = document.getElementById("loading");
+                loading.innerHTML = "loading..."
+                info = document.getElementById("block");
+                info.innerHTML = "Block #"+this.innerHTML;
+                info = document.getElementById("price");
+                sat = document.getElementById("status");
+                xhrr = new XMLHttpRequest();
+                xhrr.onreadystatechange = function(){
+                    if(xhrr.readyState == 4 && xhrr.status == 200)
+                    {
+                        var res = JSON.parse(xhrr.responseText);
+                        info.innerHTML = "Current Price: "+res[5];
+                        if(res[4] == 0)
+                        {
+                            sat.innerHTML = "Status: FOR SALE";
+                        }
+                        else
+                        {
+                            sat.innerHTML = "Status: NOT FOR SALE";
+                        }
+                    }
+                }
+                xhrr.open("GET", "http://localhost:5000/xy/"+((parseInt("{{region}}")-1)*100+parseInt(this.innerHTML)), true);
+                xhrr.send();
+                setTimeout(function(){loading = document.getElementById("loading"); loading.innerHTML = "";} ,500);
+            }
+        }
+
+        balan = new XMLHttpRequest();
+        balan.onreadystatechange = function(){ 
+            document.getElementById("balance").innerHTML"Balance:" 
+        }
     </script>
 </html>
