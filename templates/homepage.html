@@ -18,42 +18,42 @@
 
 <body>
     
-    <header>
-        <div class="header-area ">
-            <div id="sticky-header" class="main-header-area white-bg">
-                <div class="container-fluid p-0">
-                    <div class="row align-items-center justify-content-between no-gutters">
-                        <div class="col-xl-2 col-lg-2">
-                            <div class="logo-img">
-                                <a style="font-family: 'Cinzel Decorative', cursive;" href="{{ url_for('home')}}">
-                                    <span style="font-size: 2em;">CRE</span>
-                                </a>
+        <header>
+                <div class="header-area "  style="background-color: lightseagreen">
+                    <div id="sticky-header" class="main-header-area">
+                        <div class="container-fluid p-0">
+                            <div class="row align-items-center justify-content-between no-gutters">
+                                <div class="col-xl-2 col-lg-2">
+                                    <div class="logo-img">
+                                        <a style="font-family: 'Cinzel Decorative', cursive;" href="{{ url_for('home')}}">
+                                            <span style="color:whitesmoke; font-size: 2em;">CRE</span>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="col-xl-9 col-lg-1000">
+                                    <div class="main-menu  d-none d-lg-block">
+                                        <nav>
+                                            <ul id="navigation" align="right">
+                                                <li><a style="font-family:Arial, Helvetica, sans-serif; color:whitesmoke" class="active" href="{{ url_for('home')}}">Home</a></li>
+                                                {% if not session.signedin %}
+                                                    <li><a style="font-family:Arial, Helvetica, sans-serif; color:whitesmoke" href="{{ url_for('login')}}">Login</a></li>
+                                                {% endif %}
+                                                {% if session.signedin %}
+                                                    <li><a style="font-family:Arial, Helvetica, sans-serif; color:whitesmoke" href="{{ url_for('logout')}}">Logout</a></li>
+                                                    <li><p style="font-family:Arial, Helvetica, sans-serif; color:whitesmoke">Public Key: {{session.public}}</p></li>
+                                                {% endif %}
+                                            </ul>
+                                        </nav>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="mobile_menu d-block d-lg-none"></div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-xl-9 col-lg-1000">
-                            <div class="main-menu  d-none d-lg-block">
-                                <nav>
-                                    <ul id="navigation" align="right">
-                                        <li><a class="active" href="{{ url_for('home')}}">Home</a></li>
-                                        {% if not session.signedin %}
-                                            <li><a href="{{ url_for('login')}}">Login</a></li>
-                                        {% endif %}
-                                        {% if session.signedin %}
-                                            <li><a href="{{ url_for('logout')}}">Logout</a></li>
-                                            <li><p style="font-family:Arial, Helvetica, sans-serif; color:mediumseagreen">Public Key: {{session.public}}</p></li>
-                                        {% endif %}
-                                    </ul>
-                                </nav>
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <div class="mobile_menu d-block d-lg-none"></div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </header>
+            </header>
     <div style="height:400px;background:rgb(97, 57, 109);" class="breadcam_area">
         <div style=" font-family: 'Open Sans', sans-serif;font-weight: 100;" class="bradcam_text">
             <h3>Crypto Real Estate</h3>

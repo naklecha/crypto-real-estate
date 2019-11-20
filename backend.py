@@ -45,14 +45,20 @@ api.add_resource(home, '/')
 
 class regions(Resource):
     def get(self):
-        return make_response(render_template('regions.html'),200,{'Content-Type': 'text/html'})
+        if("signedin" in session and session["signedin"]):
+            return make_response(render_template('regions.html'),200,{'Content-Type': 'text/html'})
+        else:
+            return make_response(render_template('message.html',message="Please login to access marketplace."),400,{'Content-Type': 'text/html'})
 api.add_resource(regions, '/regions')
 
 # ------------------------------------------------------
 
 class grid(Resource):
     def get(self,reg):
-        return make_response(render_template('grid.html', region=reg),200,{'Content-Type': 'text/html'})
+        if("signedin" in session and session["signedin"]):
+            return make_response(render_template('grid.html', region=reg),200,{'Content-Type': 'text/html'})
+        else:
+            return make_response(render_template('message.html',message="Please login to access marketplace."),400,{'Content-Type': 'text/html'})
 api.add_resource(grid, '/grid/<reg>')
 
 # ------------------------------------------------------
@@ -79,7 +85,7 @@ class getBalance(Resource):
         if(session["signedin"]):
             return contract.caller().wallet(session["public"])
         else:
-            return "error", 400
+            return "Not logged in", 400
 api.add_resource(getBalance,"/getBalance")
 
 # ------------------------------------------------------
@@ -95,30 +101,36 @@ api.add_resource(xy, '/xy/<id>')
 
 class buy(Resource):
     def get(self, id, price):
-        try:
-            transaction  = contract.functions.buyLand(int(id)+1,int(price)).buildTransaction()
-            transaction['nonce'] = web3.eth.getTransactionCount(session["public"])
-            transaction['gas'] = 3000000
-            signed_tx = web3.eth.account.signTransaction(transaction, session["private"])
-            tx_hash = web3.eth.sendRawTransaction(signed_tx.rawTransaction)
-            return make_response(render_template('message.html',message="Bought item!"),400,{'Content-Type': 'text/html'})
-        except:
-            return make_response(render_template('message.html',message="Could not buy item."),400,{'Content-Type': 'text/html'})
+        if("signedin" in session and session["signedin"]):
+            try:
+                transaction  = contract.functions.buyLand(int(id)+1,int(price)).buildTransaction()
+                transaction['nonce'] = web3.eth.getTransactionCount(session["public"])
+                transaction['gas'] = 3000000
+                signed_tx = web3.eth.account.signTransaction(transaction, session["private"])
+                tx_hash = web3.eth.sendRawTransaction(signed_tx.rawTransaction)
+                return make_response(render_template('message.html',message="Bought item!"),400,{'Content-Type': 'text/html'})
+            except:
+                return make_response(render_template('message.html',message="Could not buy item."),400,{'Content-Type': 'text/html'})
+        else:
+            return make_response(render_template('message.html',message="Please login to buy land."),400,{'Content-Type': 'text/html'})
 api.add_resource(buy, '/buy/<id>/<price>')
 
 # ------------------------------------------------------
 
 class sell(Resource):
     def get(self, id, price):
-        try:
-            transaction  = contract.functions.sellLand(int(id)+1,int(price)).buildTransaction()
-            transaction['nonce'] = web3.eth.getTransactionCount(session["public"])
-            transaction['gas'] = 3000000
-            signed_tx = web3.eth.account.signTransaction(transaction, session["private"])
-            tx_hash = web3.eth.sendRawTransaction(signed_tx.rawTransaction)
-            return make_response(render_template('message.html',message="Sold item!"),400,{'Content-Type': 'text/html'})
-        except:
-            return make_response(render_template('message.html',message="Could not sell item."),400,{'Content-Type': 'text/html'})
+        if("signedin" in session and session["signedin"]):
+            try:
+                transaction  = contract.functions.sellLand(int(id)+1,int(price)).buildTransaction()
+                transaction['nonce'] = web3.eth.getTransactionCount(session["public"])
+                transaction['gas'] = 3000000
+                signed_tx = web3.eth.account.signTransaction(transaction, session["private"])
+                tx_hash = web3.eth.sendRawTransaction(signed_tx.rawTransaction)
+                return make_response(render_template('message.html',message="Sold item!"),400,{'Content-Type': 'text/html'})
+            except:
+                return make_response(render_template('message.html',message="Could not sell item."),400,{'Content-Type': 'text/html'})
+        else:
+            return make_response(render_template('message.html',message="Please login to sell land."),400,{'Content-Type': 'text/html'})
 api.add_resource(sell, '/sell/<id>/<price>')
 
 # ------------------------------------------------------

@@ -3,17 +3,17 @@
         .square {
         height: 300px;
         width: 45%;
-        background-color: peachpuff;
+        background-color: lightsteelblue;
         float: left;
         margin-left: 50px;
         margin-bottom: 50px;
         margin-top: 0;
         padding: 2%;
         cursor: pointer;
-        box-shadow: palegreen;
+        padding-top: 10%;
         }
         .square:hover{
-            background-color:rgb(231, 216, 148);
+            background-color:lightpink;
         }
     </style>
     <head>
@@ -36,82 +36,54 @@
     </head>
         
     <body style="background-color: whitesmoke;">
-    <header>
-            <div class="header-area " style="background-color: lightseagreen">
-                <div id="sticky-header" class="main-header-area">
-                    <div class="container-fluid p-0">
-                        <div class="row align-items-center justify-content-between no-gutters">
-                            <div class="col-xl-2 col-lg-2">
-                                <div class="logo-img">
-                                    <a style="font-family: 'Cinzel Decorative', cursive;" href="{{ url_for('home')}}">
-                                        <span style="font-size: 2em;">CRE</span>
-                                    </a>
+            <header>
+                    <div class="header-area "  style="background-color: lightseagreen">
+                        <div id="sticky-header" class="main-header-area">
+                            <div class="container-fluid p-0">
+                                <div class="row align-items-center justify-content-between no-gutters">
+                                    <div class="col-xl-2 col-lg-2">
+                                        <div class="logo-img">
+                                            <a style="font-family: 'Cinzel Decorative', cursive;" href="{{ url_for('home')}}">
+                                                <span style="color:whitesmoke; font-size: 2em;">CRE</span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-9 col-lg-1000">
+                                        <div class="main-menu  d-none d-lg-block">
+                                            <nav>
+                                                <ul id="navigation" align="right">
+                                                    <li><a style="font-family:Arial, Helvetica, sans-serif; color:whitesmoke" class="active" href="{{ url_for('home')}}">Home</a></li>
+                                                    {% if not session.signedin %}
+                                                        <li><a style="font-family:Arial, Helvetica, sans-serif; color:whitesmoke" href="{{ url_for('login')}}">Login</a></li>
+                                                    {% endif %}
+                                                    {% if session.signedin %}
+                                                        <li><a style="font-family:Arial, Helvetica, sans-serif; color:whitesmoke" href="{{ url_for('logout')}}">Logout</a></li>
+                                                        <li><p style="font-family:Arial, Helvetica, sans-serif; color:whitesmoke">Public Key: {{session.public}}</p></li>
+                                                    {% endif %}
+                                                </ul>
+                                            </nav>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="mobile_menu d-block d-lg-none"></div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-xl-9 col-lg-1000">
-                                <div class="main-menu  d-none d-lg-block">
-                                    <nav>
-                                        <ul id="navigation" align="right">
-                                            <li><a class="active" href="{{ url_for('home')}}">Home</a></li>
-                                            {% if not session.signedin %}
-                                                <li><a href="{{ url_for('login')}}">Login</a></li>
-                                            {% endif %}
-                                            {% if session.signedin %}
-                                                <li><a href="{{ url_for('logout')}}">Logout</a></li>
-                                                <li><p style="font-family:Arial, Helvetica, sans-serif; color:mediumseagreen">Public Key: {{session.public}}</p></li>
-                                            {% endif %}
-                                        </ul>
-                                    </nav>
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <div class="mobile_menu d-block d-lg-none"></div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </header>
+                </header>
         <div style="padding-left: 10%; padding-right: 10%; padding-top: 3%; padding-bottom: 0%;">
             <div class="square" onclick="location.href = '/grid/1';">
-                <h1 style="color: #4c4c4c; font-weight: 100;">Region Alpha</h1>
-                <br>
-                <hr>
-                <br>
-                <h4  style="color: #4c4c4c; font-weight: 100;">Average Cost: 100$</h4>
-                <h4  style="color: #4c4c4c; font-weight: 100;">Plots for sale: 10</h4>
-                <h4  style="color: #4c4c4c; font-weight: 100;">Plots Owned By You: 10</h4>
-                <h4  style="color: #4c4c4c; font-weight: 100;">Transactions in Region: 10000</h4>
+                <center><p style="font-family: 'Open Sans', sans-serif;font-weight: 100; font-size: 70px; color: #4c4c4c; font-weight: 100;">Region Alpha</p></center>
             </div>
             <div class="square" onclick="location.href = '/grid/2';">
-                <h1 style="color: #4c4c4c; font-weight: 100;">Region Beta</h1>
-                <br>
-                <hr>
-                <br>
-                <h4  style="color: #4c4c4c; font-weight: 100;">Average Cost: 100$</h4>
-                <h4  style="color: #4c4c4c; font-weight: 100;">Plots for sale: 10</h4>
-                <h4  style="color: #4c4c4c; font-weight: 100;">Plots Owned By You: 10</h4>
-                <h4  style="color: #4c4c4c; font-weight: 100;">Transactions in Region: 10000</h4>
+                <center><p style="font-family: 'Open Sans', sans-serif;font-weight: 100; font-size: 70px; color: #4c4c4c; font-weight: 100;">Region Beta</p></center>
             </div>
             <div class="square" onclick="location.href = '/grid/3';">
-                <h1 style="color: #4c4c4c; font-weight: 100;">Region Gamma</h1>
-                <br>
-                <hr>
-                <br>
-                <h4  style="color: #4c4c4c; font-weight: 100;">Average Cost: 100$</h4>
-                <h4  style="color: #4c4c4c; font-weight: 100;">Plots for sale: 10</h4>
-                <h4  style="color: #4c4c4c; font-weight: 100;">Plots Owned By You: 10</h4>
-                <h4  style="color: #4c4c4c; font-weight: 100;">Transactions in Region: 10000</h4>
+                <center><p style="font-family: 'Open Sans', sans-serif;font-weight: 100; font-size: 70px; color: #4c4c4c; font-weight: 100;">Region Gamma</p></center>
             </div>
             <div class="square" onclick="location.href = '/grid/4';">
-                <h1 style="color: #4c4c4c; font-weight: 100;">Region Delta</h1>
-                <br>
-                <hr>
-                <br>
-                <h4  style="color: #4c4c4c; font-weight: 100;">Average Cost: 100$</h4>
-                <h4  style="color: #4c4c4c; font-weight: 100;">Plots for sale: 10</h4>
-                <h4  style="color: #4c4c4c; font-weight: 100;">Plots Owned By You: 10</h4>
-                <h4  style="color: #4c4c4c; font-weight: 100;">Transactions in Region: 10000</h4>
+                <center><p style="font-family: 'Open Sans', sans-serif;font-weight: 100; font-size: 70px; color: #4c4c4c; font-weight: 100;">Region Delta</p></center>
             </div>
         </div>
     </body>
