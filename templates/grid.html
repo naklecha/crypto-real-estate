@@ -12,7 +12,7 @@
         }
 
         .grid-item {
-            background-color:cornsilk;
+            background-color:peachpuff;
             text-align: center;
             padding: 10px;
             font-size: 15px;
@@ -71,7 +71,7 @@
                             <div class="col-xl-2 col-lg-2">
                                 <div class="logo-img">
                                     <a style="font-family: 'Cinzel Decorative', cursive;" href="{{ url_for('home')}}">
-                                        <span style="font-size: 2em;">CRE</span>
+                                        <span style="color:whitesmoke; font-size: 2em;">CRE</span>
                                     </a>
                                 </div>
                             </div>
@@ -79,12 +79,12 @@
                                 <div class="main-menu  d-none d-lg-block">
                                     <nav>
                                         <ul id="navigation" align="right">
-                                            <li><a class="active" href="{{ url_for('home')}}">Home</a></li>
+                                            <li><a style="font-family:Arial, Helvetica, sans-serif; color:whitesmoke" class="active" href="{{ url_for('home')}}">Home</a></li>
                                             {% if not session.signedin %}
-                                                <li><a href="{{ url_for('login')}}">Login</a></li>
+                                                <li><a style="font-family:Arial, Helvetica, sans-serif; color:whitesmoke" href="{{ url_for('login')}}">Login</a></li>
                                             {% endif %}
                                             {% if session.signedin %}
-                                                <li><a href="{{ url_for('logout')}}">Logout</a></li>
+                                                <li><a style="font-family:Arial, Helvetica, sans-serif; color:whitesmoke" href="{{ url_for('logout')}}">Logout</a></li>
                                                 <li><p style="font-family:Arial, Helvetica, sans-serif; color:whitesmoke">Public Key: {{session.public}}</p></li>
                                             {% endif %}
                                         </ul>
@@ -117,13 +117,17 @@
                 <button id="refresh" type="button" class="btn btn-success">Refresh Grid</button>
                 <br>
                 <br>
-                <a id="buy"><button type="button" class="btn btn-primary">Buy Block</button></a>
+                <a id="buy" style="display: none;"><button type="button" class="btn btn-primary">Buy Block</button></a>
+                <a id="sell" style="display: none;"><button type="button" class="btn btn-danger">Sell Block</button></a>
+                <input id="amount" type="text" class="form-control" style="display: none; width: 40%; float: left; margin-right: 10px;"></input>
                 <br> <br> 
                 <h4 id="balance">Wallet Balance: </h4>
             </div>
         </div>
     </body>
     <script>
+        var resp;
+        var clicked;
         function n(){
             loading = document.getElementById("loading");
             loading.innerHTML = "Refreshing grid..."
@@ -132,7 +136,7 @@
                         if(xhr.readyState == 4 && xhr.status == 200)
                         {
                             loading.innerHTML = "";
-                            var resp = JSON.parse(xhr.responseText);
+                            resp = JSON.parse(xhr.responseText);
                             console.log(resp);
                             for(var i=0; i<100; i++)
                             {
@@ -167,6 +171,7 @@
             var d = document.getElementById(i);
             d.onclick = function()
             {
+                clicked = this.innerHTML;
                 loading = document.getElementById("loading");
                 loading.innerHTML = "Loading Block Details..."
                 info = document.getElementById("block");
@@ -177,12 +182,14 @@
                 sat = document.getElementById("status");
                 xhrr = new XMLHttpRequest();
                 var pr = 0;
+                var pub = "";
                 xhrr.onreadystatechange = function(){
                     if(xhrr.readyState == 4 && xhrr.status == 200)
                     {
                         var res = JSON.parse(xhrr.responseText);
                         info.innerHTML = "Current Price: "+res[4];
                         pr = res[4];
+                        pub = res[3];
                         console.log(res);
                         if(res[5] == 0)
                         {
@@ -196,8 +203,44 @@
                 }
                 xhrr.open("GET", "http://localhost:5000/xy/"+((parseInt("{{region}}")-1)*100+parseInt(this.innerHTML)), true);
                 xhrr.send();
-                buy = document.getElementById("buy");
-                buy.href = "http://localhost:5000/buy/"+((parseInt("{{region}}")-1)*100+parseInt(this.innerHTML))+"/"+pr;
+                console.log("hello",resp[this.innerHTML]);
+                if(resp[this.innerHTML] == 0)
+                {
+                    buy = document.getElementById("buy");
+                    buy.style.display = "";
+                    sell = document.getElementById("sell");
+                    sell.style.display = "none";
+                    amount = document.getElementById("amount");
+                    amount.style.display = "";
+                    buy.onclick = function()
+                    {
+                        var id = ((parseInt("{{region}}")-1)*100+parseInt(clicked));
+                        window.location.href = "http://localhost:5000/buy/"+id+"/"+document.getElementById("amount").value;
+                    }
+                }
+                else if(resp[this.innerHTML] == 1)
+                {
+                    buy = document.getElementById("buy");
+                    buy.style.display = "none";
+                    sell = document.getElementById("sell");
+                    sell.style.display = "";
+                    amount = document.getElementById("amount");
+                    amount.style.display = "";
+                    sell.onclick = function()
+                    {
+                        var id = ((parseInt("{{region}}")-1)*100+parseInt(clicked));
+                        window.location.href = "http://localhost:5000/sell/"+id+"/"+document.getElementById("amount").value;
+                    }
+                }
+                else
+                {
+                    buy = document.getElementById("buy");
+                    buy.style.display = "none";
+                    sell = document.getElementById("sell");
+                    sell.style.display = "none";
+                    buy = document.getElementById("amount");
+                    buy.style.display = "none";
+                }
                 setTimeout(function(){loading = document.getElementById("loading"); loading.innerHTML = "";} ,1000);
             }
         }

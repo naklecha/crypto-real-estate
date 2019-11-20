@@ -95,24 +95,30 @@ api.add_resource(xy, '/xy/<id>')
 
 class buy(Resource):
     def get(self, id, price):
-        transaction  = contract.functions.buyLand(int(id)+1,int(price)).buildTransaction()
-        transaction['nonce'] = web3.eth.getTransactionCount(session["public"])
-        transaction['gas'] = 3000000
-        signed_tx = web3.eth.account.signTransaction(transaction, session["private"])
-        tx_hash = web3.eth.sendRawTransaction(signed_tx.rawTransaction)
-        return str(tx_hash)
+        try:
+            transaction  = contract.functions.buyLand(int(id)+1,int(price)).buildTransaction()
+            transaction['nonce'] = web3.eth.getTransactionCount(session["public"])
+            transaction['gas'] = 3000000
+            signed_tx = web3.eth.account.signTransaction(transaction, session["private"])
+            tx_hash = web3.eth.sendRawTransaction(signed_tx.rawTransaction)
+            return make_response(render_template('message.html',message="Bought item!"),400,{'Content-Type': 'text/html'})
+        except:
+            return make_response(render_template('message.html',message="Could not buy item."),400,{'Content-Type': 'text/html'})
 api.add_resource(buy, '/buy/<id>/<price>')
 
 # ------------------------------------------------------
 
 class sell(Resource):
     def get(self, id, price):
-        transaction  = contract.functions.sellLand(int(id)+1,int(price)).buildTransaction()
-        transaction['nonce'] = web3.eth.getTransactionCount(session["public"])
-        transaction['gas'] = 3000000
-        signed_tx = web3.eth.account.signTransaction(transaction, session["private"])
-        tx_hash = web3.eth.sendRawTransaction(signed_tx.rawTransaction)
-        return str(tx_hash)
+        try:
+            transaction  = contract.functions.sellLand(int(id)+1,int(price)).buildTransaction()
+            transaction['nonce'] = web3.eth.getTransactionCount(session["public"])
+            transaction['gas'] = 3000000
+            signed_tx = web3.eth.account.signTransaction(transaction, session["private"])
+            tx_hash = web3.eth.sendRawTransaction(signed_tx.rawTransaction)
+            return make_response(render_template('message.html',message="Sold item!"),400,{'Content-Type': 'text/html'})
+        except:
+            return make_response(render_template('message.html',message="Could not sell item."),400,{'Content-Type': 'text/html'})
 api.add_resource(sell, '/sell/<id>/<price>')
 
 # ------------------------------------------------------
