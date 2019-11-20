@@ -89,48 +89,31 @@ class xy(Resource):
         s = contract.caller().land_record(int(id)+1)
         print(s)
         return s,200
-    def post(self,id):
-        req = eval(request.data)
-        try: # expecting req to be like {'region': 1, 'x': 1, 'y': 1, 'nickname': '_empty', 'price': 0, 'status': 'no owner'}
-            myquery = {"region": req["region"],"x": req["x"],"y": req["y"]}
-            newvalues ={ "$set":  { "nickname": req["nickname"], "status":req["status"],"price":req["price"]}}
-            land_record.update_one(myquery, newvalues)
-            check = land_record.find_one({"region": req["region"],"x": req["x"],"y": req["y"]})
-            if(check==None):
-                raise Exception
-            return "Success" 
-        except:
-            return {},400
-
 api.add_resource(xy, '/xy/<id>')
 
 # ------------------------------------------------------
 
 class buy(Resource):
-    def post(self, id, price):
-        transaction  = contract.functions.buyLand(id,price).buildTransaction()
-        transaction['nonce'] = web3.eth.getTransactionCount(public_key)
+    def get(self, id, price):
+        transaction  = contract.functions.buyLand(int(id)+1,int(price)).buildTransaction()
+        transaction['nonce'] = web3.eth.getTransactionCount(session["public"])
         transaction['gas'] = 3000000
-        signed_tx = web3.eth.account.signTransaction(transaction, private_key)
+        signed_tx = web3.eth.account.signTransaction(transaction, session["private"])
         tx_hash = web3.eth.sendRawTransaction(signed_tx.rawTransaction)
-        return tx_hash
+        return str(tx_hash)
 api.add_resource(buy, '/buy/<id>/<price>')
 
 # ------------------------------------------------------
 
 class sell(Resource):
-    def post(self):
-        req = eval(request.data) # expecting {'region': 1, 'x': 1, 'y': 1, 'nickname': '_empty', 'price': 100}
-        print(req)
-        getxy = requests.get(PATH+"xy",json = {"region": req["region"],"x": req["x"],"y": req["y"]})
-        getxy = eval(getxy._content)
-        print(getxy)
-        if(True): # check if owner using blockchain
-            postxy = requests.post(PATH+"xy",json = {"region": req["region"],"x": req["x"],"y": req["y"], 'nickname': req['nickname'], 'price': req['price'], 'status': 'for sale'})          
-            return eval(postxy._content)
-        else:
-            return "Not owner", 400
-api.add_resource(sell, '/sell')
+    def get(self, id, price):
+        transaction  = contract.functions.sellLand(int(id)+1,int(price)).buildTransaction()
+        transaction['nonce'] = web3.eth.getTransactionCount(session["public"])
+        transaction['gas'] = 3000000
+        signed_tx = web3.eth.account.signTransaction(transaction, session["private"])
+        tx_hash = web3.eth.sendRawTransaction(signed_tx.rawTransaction)
+        return str(tx_hash)
+api.add_resource(sell, '/sell/<id>/<price>')
 
 # ------------------------------------------------------
 

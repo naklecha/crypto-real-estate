@@ -110,20 +110,28 @@
             <div class="info">
                 <p id="loading"></p>
                 <h1 id="block">Select A Block</h1> 
-                <hr> <br>
-                <h4 id="price">Current Price: </h4>
-                <h4 id="status">Status: </h4>
-                <h4 id="balance">Balance: </h4>
-                <hr>
+                <p id="bid">Blockchain Block ID: </p>
+                <br> <hr>
+                <h4 id="price">Current Price: </h4> <br>
+                <h4 id="status">Status: </h4> <hr> <br>
+                <button id="refresh" type="button" class="btn btn-success">Refresh Grid</button>
+                <br>
+                <br>
+                <a id="buy"><button type="button" class="btn btn-primary">Buy Block</button></a>
+                <br> <br> 
+                <h4 id="balance">Wallet Balance: </h4>
             </div>
         </div>
     </body>
     <script>
         function n(){
+            loading = document.getElementById("loading");
+            loading.innerHTML = "Refreshing grid..."
             xhr = new XMLHttpRequest();
             xhr.onreadystatechange = function(){
                         if(xhr.readyState == 4 && xhr.status == 200)
                         {
+                            loading.innerHTML = "";
                             var resp = JSON.parse(xhr.responseText);
                             console.log(resp);
                             for(var i=0; i<100; i++)
@@ -147,8 +155,12 @@
             xhr.open("GET", "http://localhost:5000/checkowner/{{region}}", true);
             xhr.send();
         }
-        n();
-        setInterval(n, 120000);
+
+        n()
+        settimer0 = setInterval(n, 30000);
+
+        var d = document.getElementById("refresh");
+        d.onclick = n;
 
         for(var i=0; i<100; i++)
         {
@@ -156,18 +168,23 @@
             d.onclick = function()
             {
                 loading = document.getElementById("loading");
-                loading.innerHTML = "loading..."
+                loading.innerHTML = "Loading Block Details..."
                 info = document.getElementById("block");
                 info.innerHTML = "Block #"+this.innerHTML;
+                info = document.getElementById("bid");
+                info.innerHTML = "Blockchain Block ID: "+((parseInt("{{region}}")-1)*100+parseInt(this.innerHTML));
                 info = document.getElementById("price");
                 sat = document.getElementById("status");
                 xhrr = new XMLHttpRequest();
+                var pr = 0;
                 xhrr.onreadystatechange = function(){
                     if(xhrr.readyState == 4 && xhrr.status == 200)
                     {
                         var res = JSON.parse(xhrr.responseText);
-                        info.innerHTML = "Current Price: "+res[5];
-                        if(res[4] == 0)
+                        info.innerHTML = "Current Price: "+res[4];
+                        pr = res[4];
+                        console.log(res);
+                        if(res[5] == 0)
                         {
                             sat.innerHTML = "Status: FOR SALE";
                         }
@@ -179,7 +196,9 @@
                 }
                 xhrr.open("GET", "http://localhost:5000/xy/"+((parseInt("{{region}}")-1)*100+parseInt(this.innerHTML)), true);
                 xhrr.send();
-                setTimeout(function(){loading = document.getElementById("loading"); loading.innerHTML = "";} ,500);
+                buy = document.getElementById("buy");
+                buy.href = "http://localhost:5000/buy/"+((parseInt("{{region}}")-1)*100+parseInt(this.innerHTML))+"/"+pr;
+                setTimeout(function(){loading = document.getElementById("loading"); loading.innerHTML = "";} ,1000);
             }
         }
 
@@ -189,13 +208,13 @@
             balan.onreadystatechange = function(){
                 if(balan.readyState == 4 && balan.status == 200)
                 { 
-                    document.getElementById("balance").innerHTML = "Balance: "+balan.responseText;
+                    document.getElementById("balance").innerHTML = "Wallet Balance: "+balan.responseText;
                 }
             }
             balan.open("GET", "http://localhost:5000/getBalance", true);
             balan.send();
         }
         b()
-        setInterval(n, 5000);
+        settimer1 = setInterval(b, 5000);
     </script>
 </html>
