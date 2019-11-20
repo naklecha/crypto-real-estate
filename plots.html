@@ -1,0 +1,72 @@
+<html>
+    <head>
+        <style>
+            .contain{
+                display:flex;
+                justify-content: center;
+                align-items: center;
+            }
+            .plots{
+                display: flex;
+                flex-direction: row;
+                justify-content: space-around;
+                align-items: center;
+                flex-wrap: wrap;
+                width:40em;
+                height:40em;
+            }
+            .plot{
+                padding:1%;
+                height:17em;
+                width: 17em;
+                background-color: green;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="contain">
+            <div class="plots">
+                    <div href="" class="plot">
+                        
+                    </div>
+                    <div href="" class="plot">
+                        
+                    </div>
+                    <div href="" class="plot">
+                    
+                    </div>
+                    <div href="" class="plot">
+                
+                    </div>
+            </div>
+        </div>
+        <script>
+            var url = "localhost:30000000000";
+            var plot = document.getElementById("plot");
+            plot.addEventListener("click", getPlots);
+            function getPlots(){
+
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', url);
+                xhr.seenBytes = 0;
+                xhr.onreadystatechange = function() {
+                    console.log("state change.. state: "+ xhr.readyState);
+                    if(xhr.readyState == 3) {
+                        var newData = xhr.response.substr(xhr.seenBytes);
+                        console.log("newData: <<" +newData+ ">>");
+                        document.body.innerHTML += "New data: <<" +newData+ ">><br />";
+                        xhr.seenBytes = xhr.responseText.length;
+                        console.log("seenBytes: " +xhr.seenBytes);
+                        render(newdata);
+                    }
+                };
+            }
+
+            function render(){
+                //to be implemeted..
+            }
+
+
+        </script>  
+    </body>
+</html>
