@@ -19,6 +19,12 @@ contract CRE {
         require(check==0, "Already Created Land Grid");
         addLandRecord(region,x,y);
     }
+
+    function addFunds(uint funds) public {
+        require(check==0, "No More Funds Can Be Added");
+        wallet[msg.sender] += funds;
+    }
+
     function addLandRecord (uint i,uint j,uint k) private {
         landCount ++;
         land_record[landCount] = Land(i, j, k, msg.sender, 0, 0);
