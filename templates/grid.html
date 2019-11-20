@@ -1,19 +1,36 @@
 <html>
     <style>
-        .square {
-        height: 300px;
-        width: 45%;
-        background-color: palegoldenrod;
-        float: left;
-        margin-left: 50px;
-        margin-bottom: 50px;
-        margin-top: 0;
-        padding: 2%;
-        cursor: pointer;
-        box-shadow: palegreen;
+        .grid-container {
+            grid-template-columns: auto auto auto auto auto auto auto auto auto auto;
+            display: grid;
+            grid-gap: 2px;
+            background-color:goldenrod;
+            padding: 5px;
+            width: 70%;
+            float: left;
+            height: 72%;
         }
-        .square:hover{
-            background-color:rgb(231, 216, 148);
+
+        .grid-item {
+            background-color: whitesmoke;
+            text-align: center;
+            padding: 10px;
+            font-size: 17px;
+            font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+            cursor: pointer;
+            height: 100%;
+        }
+        .grid-item:hover
+        {
+            background-color: lightgreen;
+        }
+        .info {
+            width: 28%;
+            float: left;
+            background: palegoldenrod;
+            height: 100%;
+            margin-left: 20px;
+            height: 72%;
         }
     </style>
     <head>
@@ -35,7 +52,7 @@
             
     </head>
         
-    <body style="background-color:rgb(97, 57, 109);">
+    <body style="">
     <header>
             <div class="header-area ">
                 <div id="sticky-header" class="main-header-area white-bg">
@@ -73,46 +90,45 @@
             </div>
         </header>
         <div style="padding-left: 10%; padding-right: 10%; padding-top: 3%; padding-bottom: 0%;">
-            <div class="square" onclick="location.href = '/grid/1';">
-                <h1 style="color: #4c4c4c; font-weight: 100;">Region Alpha</h1>
-                <br>
-                <hr>
-                <br>
-                <h4  style="color: #4c4c4c; font-weight: 100;">Average Cost: 100$</h4>
-                <h4  style="color: #4c4c4c; font-weight: 100;">Plots for sale: 10</h4>
-                <h4  style="color: #4c4c4c; font-weight: 100;">Plots Owned By You: 10</h4>
-                <h4  style="color: #4c4c4c; font-weight: 100;">Transactions in Region: 10000</h4>
+            <div class="grid-container">
+                {% for i in range(100) %}
+                    <div class="grid-item" id="{{i}}">{{i}}</div>
+                {% endfor %}
             </div>
-            <div class="square" onclick="location.href = '/grid/2';">
-                <h1 style="color: #4c4c4c; font-weight: 100;">Region Beta</h1>
-                <br>
-                <hr>
-                <br>
-                <h4  style="color: #4c4c4c; font-weight: 100;">Average Cost: 100$</h4>
-                <h4  style="color: #4c4c4c; font-weight: 100;">Plots for sale: 10</h4>
-                <h4  style="color: #4c4c4c; font-weight: 100;">Plots Owned By You: 10</h4>
-                <h4  style="color: #4c4c4c; font-weight: 100;">Transactions in Region: 10000</h4>
-            </div>
-            <div class="square" onclick="location.href = '/grid/3';">
-                <h1 style="color: #4c4c4c; font-weight: 100;">Region Gamma</h1>
-                <br>
-                <hr>
-                <br>
-                <h4  style="color: #4c4c4c; font-weight: 100;">Average Cost: 100$</h4>
-                <h4  style="color: #4c4c4c; font-weight: 100;">Plots for sale: 10</h4>
-                <h4  style="color: #4c4c4c; font-weight: 100;">Plots Owned By You: 10</h4>
-                <h4  style="color: #4c4c4c; font-weight: 100;">Transactions in Region: 10000</h4>
-            </div>
-            <div class="square" onclick="location.href = '/grid/4';">
-                <h1 style="color: #4c4c4c; font-weight: 100;">Region Delta</h1>
-                <br>
-                <hr>
-                <br>
-                <h4  style="color: #4c4c4c; font-weight: 100;">Average Cost: 100$</h4>
-                <h4  style="color: #4c4c4c; font-weight: 100;">Plots for sale: 10</h4>
-                <h4  style="color: #4c4c4c; font-weight: 100;">Plots Owned By You: 10</h4>
-                <h4  style="color: #4c4c4c; font-weight: 100;">Transactions in Region: 10000</h4>
-            </div>
+            
+            <div class="info"> stuff </div>
         </div>
     </body>
+    <script>
+        function n(){
+            xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function(){
+                        if(xhr.readyState == 4 && xhr.status == 200)
+                        {
+                            var res = JSON.parse(xhr.responseText);
+                            console.log(res);
+                            for(var i=0; i<100; i++)
+                            {
+                                var d = document.getElementById(i);
+                                if(res[i] == 1)
+                                {
+                                    d.style.backgroundColor = "lightblue";
+                                    d.onmouseover = function(){this.style.backgroundColor = "lightgreen"}
+                                    d.onmouseleave = function(){this.style.backgroundColor = "lightblue"}
+                                }
+                                if(res[i] == 2)
+                                {
+                                    d.style.backgroundColor = "pink";
+                                    d.onmouseover = function(){this.style.backgroundColor = "lightgreen"}
+                                    d.onmouseleave = function(){this.style.backgroundColor = "pink"}
+                                }
+                            }
+                        }
+                    };
+            xhr.open("GET", "http://localhost:5000/checkowner/{{region}}", false);
+            xhr.send();
+        }
+        n();
+        setInterval(n, 30000);
+    </script>
 </html>

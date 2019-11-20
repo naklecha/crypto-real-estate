@@ -51,6 +51,30 @@ api.add_resource(regions, '/regions')
 
 # ------------------------------------------------------
 
+class grid(Resource):
+    def get(self,reg):
+        return make_response(render_template('grid.html', region=reg),200,{'Content-Type': 'text/html'})
+api.add_resource(grid, '/grid/<reg>')
+
+# ------------------------------------------------------
+
+class checkowner(Resource):
+    def get(self, reg):
+        ret = []
+        for i in range(1,101):
+            t = contract.caller().land_record(100*(int(reg)-1)+i)
+            print(t[3])
+            if(session["signedin"] and int(session["public"]==t[3])):
+                ret.append(1)
+            elif(t[-1] == 1):
+                ret.append(2)
+            else:
+                ret.append(0)
+        return ret
+api.add_resource(checkowner,"/checkowner/<reg>")
+
+# ------------------------------------------------------
+
 class xy(Resource):
     def get(self):
         req = eval(request.data)
