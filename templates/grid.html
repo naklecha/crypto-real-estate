@@ -114,7 +114,6 @@
                 <br> <hr>
                 <h4 id="price">Current Price: </h4> <br>
                 <h4 id="status">Status: </h4> <hr> <br>
-                <button id="refresh" type="button" class="btn btn-success">Refresh Grid</button>
                 <br>
                 <br>
                 <a id="buy" style="display: none;"><button type="button" class="btn btn-primary">Buy Block</button></a>
@@ -128,43 +127,31 @@
     <script>
         var resp;
         var clicked;
-        function n(){
+        var eventSource = new EventSource("http://localhost:5000/checkowner/{{region}}");
+        eventSource.onmessage = function(e) {
             loading = document.getElementById("loading");
             loading.innerHTML = "Refreshing grid..."
-            xhr = new XMLHttpRequest();
-            xhr.onreadystatechange = function(){
-                        if(xhr.readyState == 4 && xhr.status == 200)
-                        {
-                            loading.innerHTML = "";
-                            resp = JSON.parse(xhr.responseText);
-                            console.log(resp);
-                            for(var i=0; i<100; i++)
-                            {
-                                var d = document.getElementById(i);
-                                if(resp[i] == 1)
-                                {
-                                    d.style.backgroundColor = "lightblue";
-                                    d.onmouseover = function(){this.style.backgroundColor = "lightgreen"}
-                                    d.onmouseleave = function(){this.style.backgroundColor = "lightblue"}
-                                }
-                                if(resp[i] == 2)
-                                {
-                                    d.style.backgroundColor = "pink";
-                                    d.onmouseover = function(){this.style.backgroundColor = "lightgreen"}
-                                    d.onmouseleave = function(){this.style.backgroundColor = "pink"}
-                                }
-                            }
-                        }
-                    };
-            xhr.open("GET", "http://localhost:5000/checkowner/{{region}}", true);
-            xhr.send();
+            resp = e.data;
+            resp = JSON.parse(resp);
+            console.log(resp);
+            for(var i=0; i<100; i++)
+            {
+                var d = document.getElementById(i);
+                if(resp[i] == 1)
+                {
+                    d.style.backgroundColor = "lightblue";
+                    d.onmouseover = function(){this.style.backgroundColor = "lightgreen"}
+                    d.onmouseleave = function(){this.style.backgroundColor = "lightblue"}
+                }
+                if(resp[i] == 2)
+                {
+                    d.style.backgroundColor = "pink";
+                    d.onmouseover = function(){this.style.backgroundColor = "lightgreen"}
+                    d.onmouseleave = function(){this.style.backgroundColor = "pink"}
+                }
+            }
+            setTimeout(function(){loading = document.getElementById("loading"); loading.innerHTML = "";} ,2000);
         }
-
-        n()
-        settimer0 = setInterval(n, 30000);
-
-        var d = document.getElementById("refresh");
-        d.onclick = n;
 
         for(var i=0; i<100; i++)
         {
@@ -172,6 +159,7 @@
             d.onclick = function()
             {
                 clicked = this.innerHTML;
+                console.log("clickeddd")
                 loading = document.getElementById("loading");
                 loading.innerHTML = "Loading Block Details..."
                 info = document.getElementById("block");

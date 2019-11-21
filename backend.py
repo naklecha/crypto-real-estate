@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, session, make_response, render_template, redirect
+from flask import *
 from flask_restful import Resource, Api
 from pymongo import MongoClient
 import requests
@@ -64,20 +64,31 @@ api.add_resource(grid, '/grid/<reg>')
 
 # ------------------------------------------------------
 
-class checkowner(Resource):
-    def get(self, reg):
-        ret = []
-        for i in range(1,101):
-            t = contract.caller().land_record(100*(int(reg)-1)+i)
-            print(t[3])
-            if(session["signedin"] and int(session["public"]==t[3])):
-                ret.append(1)
-            elif(t[-1] == 1):
-                ret.append(2)
-            else:
-                ret.append(0)
-        return ret
-api.add_resource(checkowner,"/checkowner/<reg>")
+def calculateowner(reg, pub, sign):
+    ret = []
+    for i in range(1,101):
+        t = contract.caller().land_record(100*(int(reg)-1)+i)
+        print(t[3])
+        if(t[3] == pub and sign):
+            ret.append(1)
+        elif(t[-1] == 1):
+            ret.append(2)
+        else:
+            ret.append(0)
+    return ret
+
+@app.route("/checkowner/<reg>", methods=["GET"])
+def checkowner(reg):
+    def eventStream(pub, sign):
+        ret = calculateowner(reg, pub, sign)
+        yield "event: message\ndata: %s\n\n" %(str(ret))
+        while True:
+            check = calculateowner(reg, pub, sign)
+            if(ret != check):
+                ret = check
+                yield "event: message\ndata: %s\n\n" %(str(ret))
+            time.sleep(2)
+    return Response(eventStream(session["public"], ("signedin" in session) and session["signedin"]), mimetype="text/event-stream")
 
 # ------------------------------------------------------
 
