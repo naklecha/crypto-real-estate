@@ -143,11 +143,17 @@
                     d.onmouseover = function(){this.style.backgroundColor = "lightgreen"}
                     d.onmouseleave = function(){this.style.backgroundColor = "lightblue"}
                 }
-                if(resp[i] == 2)
+                else if(resp[i] == 2)
                 {
                     d.style.backgroundColor = "pink";
                     d.onmouseover = function(){this.style.backgroundColor = "lightgreen"}
                     d.onmouseleave = function(){this.style.backgroundColor = "pink"}
+                }
+                else
+                {
+                    d.style.backgroundColor = "lightslategrey";
+                    d.onmouseover = function(){this.style.backgroundColor = "lightgreen"}
+                    d.onmouseleave = function(){this.style.backgroundColor = "lightslategrey"}
                 }
             }
             setTimeout(function(){loading = document.getElementById("loading"); loading.innerHTML = "";} ,2000);

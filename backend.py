@@ -68,7 +68,6 @@ def calculateowner(reg, pub, sign):
     ret = []
     for i in range(1,101):
         t = contract.caller().land_record(100*(int(reg)-1)+i)
-        print(t[3])
         if(t[3] == pub and sign):
             ret.append(1)
         elif(t[-1] == 1):
